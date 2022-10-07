@@ -1,0 +1,13 @@
+/model/
+/.venv/
+/source/*.tar.gz
+__pycache__/
+/TTS/
+
+/download/amd64/*.whl
+/download/amd64/noavx/*.whl
+/download/armv7/*.whl
+/download/armv7/noavx/*.whl
+/download/arm64/*.whl
+/download/arm64/noavx/*.whl
+/download/shared/*.whl
