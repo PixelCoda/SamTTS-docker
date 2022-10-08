@@ -1,4 +1,5 @@
-FROM python:3.7 as build 
+FROM debian:buster-slim as build
+
 ENV LANG C.UTF-8
 
 # IFDEF PROXY
@@ -34,8 +35,8 @@ RUN python3 -m venv ${VENV}
 # ENDIF
 
 # Set up Python virtual environment
-RUN ${VENV}/bin/pip3 install --upgrade pip && \
-    ${VENV}/bin/pip3 install --upgrade wheel setuptools
+# RUN ${VENV}/bin/pip3 install --upgrade pip && \
+#     ${VENV}/bin/pip3 install --upgrade wheel setuptools
 
 # Target architecture
 ARG TARGETARCH
