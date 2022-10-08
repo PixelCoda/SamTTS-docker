@@ -17,13 +17,14 @@ RUN apt-get update && \
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
 
 COPY source/ /source/
+COPY modal/ /modal/
 
 RUN mkdir -p /app && \
     cd /app && \
     if [ -f '/source/TTS.tar.gz' ]; then \
       tar -C /app -xf /source/TTS.tar.gz; \
     else \
-      git clone https://github.com/mozilla/TTS; \
+      git clone https://git.opensam.foundation/sam/TTS; \
     fi
 
 ENV VENV=/app/venv
