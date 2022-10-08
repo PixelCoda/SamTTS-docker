@@ -1,5 +1,4 @@
-FROM debian:buster-slim as build
-
+FROM python:3.7 as build 
 ENV LANG C.UTF-8
 
 # IFDEF PROXY
@@ -51,7 +50,7 @@ COPY download/${TARGETARCH}${TARGETVARIANT}/ /download/
 # ENDIF
 
 # Install torch from local cache if present
-RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.7.1' || true
+RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.6.0' || true
 
 # Install the rest of the requirements
 RUN cd /app/TTS && \
