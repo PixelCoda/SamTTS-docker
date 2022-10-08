@@ -23,3 +23,4 @@ gdown
 umap-learn
 cython
 pyyaml==5.4
+llvmlite==0.31.0
