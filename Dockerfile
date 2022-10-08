@@ -24,7 +24,7 @@ RUN mkdir -p /app && \
     if [ -f '/source/TTS.tar.gz' ]; then \
       tar -C /app -xf /source/TTS.tar.gz; \
     else \
-      git clone https://git.opensam.foundation/sam/TTS; \
+      git clone https://github.com/mozilla/TTS; \
     fi
 
 ENV VENV=/app/venv
