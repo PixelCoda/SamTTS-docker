@@ -52,7 +52,7 @@ RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
 RUN apt update
 RUN apt install llvm
