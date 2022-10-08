@@ -5,13 +5,13 @@ ENV LANG C.UTF-8
 # IFDEF PROXY
 #! RUN echo 'Acquire::http { Proxy "http://${APT_PROXY_HOST}:${APT_PROXY_PORT}"; };' >> /etc/apt/apt.conf.d/01proxy
 # ENDIF
-
+RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
         build-essential \
         python3 python3-dev python3-pip python3-venv python3-setuptools \
         espeak libsndfile1 git \
-        llvm-11 llvm-11-dev llvm-11-tools libatlas-base-dev libopenblas-dev gfortran \
+        llvm-10 llvm-10-dev llvm-10-tools libatlas-base-dev libopenblas-dev gfortran \
         ca-certificates wget python3-wheel curl ca-certificates
 
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
