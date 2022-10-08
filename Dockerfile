@@ -11,7 +11,7 @@ RUN apt-get update && \
         build-essential \
         python3 python3-dev python3-pip python3-venv python3-setuptools \
         espeak libsndfile1 git \
-        llvm-7-dev libatlas-base-dev libopenblas-dev gfortran \
+        llvm-11-dev libatlas-base-dev libopenblas-dev gfortran \
         ca-certificates wget python3-wheel curl ca-certificates
 
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
@@ -52,10 +52,10 @@ RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
-RUN apt update
-RUN apt install llvm
+# RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+# RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
+# RUN apt update
+# RUN apt install llvm
 
 RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel'
 
