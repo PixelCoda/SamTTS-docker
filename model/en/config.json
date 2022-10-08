@@ -1,5 +1,5 @@
 {
-    "model": "melgan",
+    "model": "Tacotron2",
     "run_name": "multiband-melgan",
     "run_description": "multiband melgan mean-var scaling",
 
