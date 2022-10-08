@@ -1,3 +1,5 @@
+llvmlite==0.36.0
+numba
 torch==1.6.0
 numpy==1.20.1
 scipy==1.5.1
@@ -22,5 +24,3 @@ gdown
 umap-learn
 cython
 pyyaml==5.4
-numba
-llvmlite
