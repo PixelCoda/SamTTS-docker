@@ -16,7 +16,7 @@ RUN apt-get update && \
         llvm-11-dev llvm-11 libatlas-base-dev libopenblas-dev gfortran \
         ca-certificates wget python3-wheel curl ca-certificates
 
-ENV LLVM_CONFIG=/usr/bin/llvm-config-11
+# ENV LLVM_CONFIG=/usr/bin/llvm-config-11
 
 COPY source/ /source/
 

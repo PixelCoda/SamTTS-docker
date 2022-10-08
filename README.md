@@ -1,0 +1,1 @@
+Forked from MozillaTTS. The Open Sam Foundations TTS Server/Service is licensed under GPLv3. See the license file for details.
