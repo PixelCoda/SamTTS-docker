@@ -50,10 +50,10 @@ COPY download/${TARGETARCH}${TARGETVARIANT}/ /download/
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-RUN ${VENV}/bin/pip3 install -f download/ 'pyyaml' 'future' 'numpy' 'requests' 'setuptools' 'six'
+RUN ${VENV}/bin/pip3 install -f download/ 'pyyaml' 'requests' 'setuptools' 'six'
 
 # Install torch from local cache if present
-RUN ${VENV}/bin/pip3 install git+https://github.com/pytorch/pytorch.git@b31f58de6fa8bbda5353b3c77d9be4914399724d
+# RUN ${VENV}/bin/pip3 install git+https://github.com/pytorch/pytorch.git@b31f58de6fa8bbda5353b3c77d9be4914399724d
 
 # Install the rest of the requirements
 RUN cd /app/TTS && \
