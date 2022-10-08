@@ -51,7 +51,7 @@ COPY download/${TARGETARCH}${TARGETVARIANT}/ /download/
 # ENDIF
 
 # Install torch from local cache if present
-RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.8.0' || true
+RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.7.1' || true
 
 # Install the rest of the requirements
 RUN cd /app/TTS && \
