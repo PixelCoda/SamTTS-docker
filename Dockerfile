@@ -12,7 +12,7 @@ RUN apt-get update && \
         python3 python3-dev python3-pip python3-venv python3-setuptools \
         espeak libsndfile1 git \
         llvm-7-dev libatlas-base-dev libopenblas-dev gfortran \
-        ca-certificates cmake
+        ca-certificates wget
 
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
 
