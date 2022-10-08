@@ -17,7 +17,6 @@ RUN apt-get update && \
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
 
 COPY source/ /source/
-COPY modal/ /modal/
 
 RUN mkdir -p /app && \
     cd /app && \
