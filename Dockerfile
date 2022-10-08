@@ -1,4 +1,4 @@
-FROM debian:buster-20210329-slim as build
+FROM debian:buster-20190610-slim
 ENV LANG C.UTF-8
 
 # IFDEF PROXY
@@ -6,6 +6,7 @@ ENV LANG C.UTF-8
 # ENDIF
 # RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
 
+RUN apt search llvm
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
