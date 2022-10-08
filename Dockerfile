@@ -12,7 +12,7 @@ RUN apt-get update && \
         python3 python3-dev python3-pip python3-venv python3-setuptools \
         espeak libsndfile1 git \
         llvm-7-dev libatlas-base-dev libopenblas-dev gfortran \
-        ca-certificates wget
+        ca-certificates wget python3-wheel
 
 ENV LLVM_CONFIG=/usr/bin/llvm-config-7
 
@@ -52,7 +52,7 @@ RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1'
+RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel'
 
 # Install torch from local cache if present
 # RUN ${VENV}/bin/pip3 install git+https://github.com/pytorch/pytorch.git@b31f58de6fa8bbda5353b3c77d9be4914399724d
