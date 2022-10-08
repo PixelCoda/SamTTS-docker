@@ -1,5 +1,4 @@
-FROM debian:buster-slim as build
-
+FROM debian:buster-20210329-slim as build
 ENV LANG C.UTF-8
 
 # IFDEF PROXY
