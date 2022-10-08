@@ -44,6 +44,7 @@
 
     // MODEL PARAMETERS
     "use_pqmf": true,
+    "use_phonemes": false,
 
     // LOSS PARAMETERS
     "use_stft_loss": true,
