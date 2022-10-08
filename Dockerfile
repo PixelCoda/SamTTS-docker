@@ -16,7 +16,7 @@ RUN apt-get update && \
         llvm-11-dev llvm-11 libatlas-base-dev libopenblas-dev gfortran \
         ca-certificates wget python3-wheel curl ca-certificates
 
-# ENV LLVM_CONFIG=/usr/bin/llvm-config-11
+ENV LLVM_CONFIG=/usr/bin/llvm-config-11
 
 COPY source/ /source/
 
@@ -37,8 +37,8 @@ RUN python3 -m venv ${VENV}
 # ENDIF
 
 # Set up Python virtual environment
-# RUN ${VENV}/bin/pip3 install --upgrade pip && \
-#     ${VENV}/bin/pip3 install --upgrade wheel setuptools
+RUN ${VENV}/bin/pip3 install --upgrade pip && \
+    ${VENV}/bin/pip3 install --upgrade wheel setuptools
 
 # Target architecture
 ARG TARGETARCH
@@ -54,12 +54,7 @@ RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-# RUN wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-# RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
-# RUN apt update
-# RUN apt install llvm
-
-RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel'
+RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel' 'llvmlite==0.39.1'
 
 # Install torch from local cache if present
 # RUN ${VENV}/bin/pip3 install git+https://github.com/pytorch/pytorch.git@b31f58de6fa8bbda5353b3c77d9be4914399724d
