@@ -1,4 +1,3 @@
-/model/
 /.venv/
 /source/*.tar.gz
 __pycache__/
