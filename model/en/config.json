@@ -1,4 +1,5 @@
 {
+    "model": "melgan",
     "run_name": "multiband-melgan",
     "run_description": "multiband melgan mean-var scaling",
 
@@ -94,7 +95,7 @@
     "conv_pad": 0,
     "use_noise_augment": false,
     "use_cache": true,
-
+    "use_phonemes": true,
     "reinit_layers": [],    // give a list of layer names to restore from the given checkpoint. If not defined, it reloads all heuristically matching layers.
 
     // TRAINING
