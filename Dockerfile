@@ -47,10 +47,10 @@ RUN /app/bin/pip3 install \
       -f https://synesthesiam.github.io/prebuilt-apps/index.html \
       -f /download
 
-ARG TTS_VERSION
+ARG TTS_VERSION 
 
 # Remove torch, numpy, and scipy from requirements.txt since we already installed them above.
-RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://github.com/coqui-ai/TTS/archive/refs/tags/v${TTS_VERSION}.tar.gz" && \
+RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://git.opensam.foundation/sam/tts/archive/${TTS_VERSION}.tar.gz" && \
     tar -xf "TTS-${TTS_VERSION}.tar.gz" && \
     cd "TTS-${TTS_VERSION}/" && \
     sed -i '/^\(torch\|numpy\|scipy\)[>=~]/d' requirements.txt
