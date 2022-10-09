@@ -1,6 +1,6 @@
 FROM debian:buster-20210329-slim as build
 ENV LANG C.UTF-8
-
+RUN echo "0.0.1"
 # IFDEF PROXY
 #! RUN echo 'Acquire::http { Proxy "http://${APT_PROXY_HOST}:${APT_PROXY_PORT}"; };' >> /etc/apt/apt.conf.d/01proxy
 # ENDIF
