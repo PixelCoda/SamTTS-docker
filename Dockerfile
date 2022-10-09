@@ -1,4 +1,4 @@
-FROM debian:buster-20190610-slim
+FROM debian:buster-20210329-slim as build
 ENV LANG C.UTF-8
 
 # IFDEF PROXY
@@ -57,6 +57,9 @@ RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel' 'llvmlite==0.3
 
 # Pre Download Torch into cache
 RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71086a9ecc188053d263d3594237281284d82/torch-1.6.0-cp37-cp37m-manylinux1_x86_64.whl -P download/
+
+# Install torch from local cache if present
+RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.6.0' || true
 
 # Install the rest of the requirements
 RUN cd /app/TTS && \
