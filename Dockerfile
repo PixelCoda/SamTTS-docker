@@ -39,8 +39,7 @@ ENV TORCH_VERSION=1.8.0
 
 # Install CPU-only PyTorch to save space.
 # Pre-compiled ARM wheels require newer numpy.
-RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
-    /app/bin/pip3 install \
+RUN /app/bin/pip3 install \
       "torch==${TORCH_VERSION}+cpu" \
       'numpy==1.20.2' \
       'scipy==1.6.3' \
@@ -56,11 +55,9 @@ RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://github.com/coqui-ai/TTS/archive
     cd "TTS-${TTS_VERSION}/" && \
     sed -i '/^\(torch\|numpy\|scipy\)[>=~]/d' requirements.txt
 
-RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
-    /app/bin/pip3 install -r "/TTS-${TTS_VERSION}/requirements.txt" -f /download
+RUN /app/bin/pip3 install -r "/TTS-${TTS_VERSION}/requirements.txt" -f /download
 
-RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
-    /app/bin/pip3 install "/TTS-${TTS_VERSION}" -f /download
+RUN /app/bin/pip3 install "/TTS-${TTS_VERSION}" -f /download
 
 # Clean up
 RUN rm -f /etc/apt/apt.conf.d/01cache
