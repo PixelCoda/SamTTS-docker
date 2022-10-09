@@ -70,4 +70,4 @@ ENV PULSE_SERVER=''
 
 ENV PATH=/app/bin:${PATH}
 
-ENTRYPOINT ["tts"]
+ENTRYPOINT ["tts-server"]
