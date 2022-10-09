@@ -13,10 +13,10 @@ RUN apt-get update && \
         build-essential \
         python3 python3-dev python3-pip python3-venv python3-setuptools \
         espeak libsndfile1 git \
-        llvm-9-dev llvm-9 libatlas-base-dev libopenblas-dev gfortran \
+        llvm-7-dev llvm-7 libatlas-base-dev libopenblas-dev gfortran \
         ca-certificates wget python3-wheel curl ca-certificates
 
-ENV LLVM_CONFIG=/usr/bin/llvm-config-9
+ENV LLVM_CONFIG=/usr/bin/llvm-config-7
 
 COPY source/ /source/
 
@@ -53,7 +53,7 @@ COPY download/${TARGETARCH}${TARGETVARIANT}/ /download/
 #! RUN mv download/noavx/* download/
 # ENDIF
 
-RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel' 'llvmlite==0.33.0'
+RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel' 'llvmlite==0.28.0'
 
 # Pre Download Torch into cache
 RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71086a9ecc188053d263d3594237281284d82/torch-1.6.0-cp37-cp37m-manylinux1_x86_64.whl -P download/
