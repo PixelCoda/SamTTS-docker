@@ -3,6 +3,9 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 
 ENV LLVM_VERSION=9
+ENV TTS_VERSION=0.8.0
+
+
 
 # Deconflict apt locks by platform in cache
 RUN echo "Dir::Cache var/cache/apt/${TARGETARCH}${TARGETVARIANT};" > /etc/apt/apt.conf.d/01cache
