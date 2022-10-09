@@ -7,8 +7,7 @@ ENV LLVM_VERSION=9
 # Deconflict apt locks by platform in cache
 RUN echo "Dir::Cache var/cache/apt/${TARGETARCH}${TARGETVARIANT};" > /etc/apt/apt.conf.d/01cache
 
-RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
-    mkdir -p /var/cache/apt/${TARGETARCH}${TARGETVARIANT}/archives/partial && \
+RUN mkdir -p /var/cache/apt/${TARGETARCH}${TARGETVARIANT}/archives/partial && \
     apt-get update && \
     apt-get install --yes --no-install-recommends \
         espeak-ng wget \
@@ -16,8 +15,7 @@ RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
         libmecab-dev
 
 # Need llvm dev package for arm64 and armv7l
-RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
-    if [ ! "${TARGETARCH}${TARGETVARIANT}" = 'amd64' ]; then \
+RUN if [ ! "${TARGETARCH}${TARGETVARIANT}" = 'amd64' ]; then \
       wget -O - 'http://archive.raspberrypi.org/debian/raspberrypi.gpg.key' | apt-key add - && \
       echo "deb http://archive.raspberrypi.org/debian/ buster main" >> /etc/apt/sources.list && \
       apt-get update && \
@@ -26,8 +24,7 @@ RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
     fi
 
 # Create virtual environment so we can use a working pip
-RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
-    python3 -m venv /app && \
+RUN python3 -m venv /app && \
     /app/bin/pip3 install --upgrade pip && \
     /app/bin/pip3 install --upgrade wheel setuptools
 
