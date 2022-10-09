@@ -6,8 +6,6 @@ ENV LANG C.UTF-8
 # ENDIF
 # RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
 
-RUN apt search llvm
-
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
         build-essential \
