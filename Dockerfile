@@ -3,7 +3,7 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 
 ENV LLVM_VERSION=9
-ENV TTS_VERSION=0.8.0
+ENV TTS_VERSION=0.8.2
 
 RUN echo "0.0.0.1"
 
@@ -52,7 +52,7 @@ ARG TTS_VERSION
 # Remove torch, numpy, and scipy from requirements.txt since we already installed them above.
 RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://git.opensam.foundation/sam/tts/archive/${TTS_VERSION}.tar.gz" && \
     tar -xf "TTS-${TTS_VERSION}.tar.gz" && \
-    cd "TTS-${TTS_VERSION}/" && \
+    cd "tts/" && \
     sed -i '/^\(torch\|numpy\|scipy\)[>=~]/d' requirements.txt
 
 RUN /app/bin/pip3 install -r "/TTS-${TTS_VERSION}/requirements.txt" -f /download
