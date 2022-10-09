@@ -55,9 +55,9 @@ RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://git.opensam.foundation/sam/tts/
     cd "tts/" && \
     sed -i '/^\(torch\|numpy\|scipy\)[>=~]/d' requirements.txt
 
-RUN /app/bin/pip3 install -r "/TTS-${TTS_VERSION}/requirements.txt" -f /download
+RUN /app/bin/pip3 install -r "/tts/requirements.txt" -f /download
 
-RUN /app/bin/pip3 install "/TTS-${TTS_VERSION}" -f /download
+RUN /app/bin/pip3 install "/tts" -f /download
 
 # Clean up
 RUN rm -f /etc/apt/apt.conf.d/01cache
