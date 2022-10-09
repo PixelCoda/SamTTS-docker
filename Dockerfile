@@ -1,109 +1,73 @@
-FROM debian:buster-20210329-slim as build
-ENV LANG C.UTF-8
-RUN echo "0.0.1"
-# IFDEF PROXY
-#! RUN echo 'Acquire::http { Proxy "http://${APT_PROXY_HOST}:${APT_PROXY_PORT}"; };' >> /etc/apt/apt.conf.d/01proxy
-# ENDIF
-# RUN add-apt-repository 'deb http://apt.llvm.org/buster/   llvm-toolchain-buster-11  main'
-
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
-        build-essential \
-        python3 python3-dev python3-pip python3-venv python3-setuptools \
-        espeak libsndfile1 git \
-        llvm-7-dev llvm-7 libatlas-base-dev libopenblas-dev gfortran \
-        ca-certificates wget python3-wheel curl ca-certificates
-
-ENV LLVM_CONFIG=/usr/bin/llvm-config-7
-
-COPY source/ /source/
-
-RUN mkdir -p /app && \
-    cd /app && \
-    if [ -f '/source/TTS.tar.gz' ]; then \
-      tar -C /app -xf /source/TTS.tar.gz; \
-    else \
-      git clone https://github.com/mozilla/TTS; \
-    fi
-
-ENV VENV=/app/venv
-RUN python3 -m venv ${VENV}
-
-# IFDEF PROXY
-#! ENV PIP_INDEX_URL=http://${PYPI_PROXY_HOST}:${PYPI_PROXY_PORT}/simple/
-#! ENV PIP_TRUSTED_HOST=${PYPI_PROXY_HOST}
-# ENDIF
-
-# Set up Python virtual environment
-RUN ${VENV}/bin/pip3 install --upgrade pip && \
-    ${VENV}/bin/pip3 install --upgrade wheel setuptools
-
-# Target architecture
+FROM python:3.7-buster
 ARG TARGETARCH
 ARG TARGETVARIANT
 
-# Copy shared and architecture-specific files
-COPY download/shared/ /download/
+ENV LLVM_VERSION=9
+
+# Deconflict apt locks by platform in cache
+RUN echo "Dir::Cache var/cache/apt/${TARGETARCH}${TARGETVARIANT};" > /etc/apt/apt.conf.d/01cache
+
+RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
+    mkdir -p /var/cache/apt/${TARGETARCH}${TARGETVARIANT}/archives/partial && \
+    apt-get update && \
+    apt-get install --yes --no-install-recommends \
+        espeak-ng wget \
+        libatlas3-base libgfortran5 libopenblas-base \
+        libmecab-dev
+
+# Need llvm dev package for arm64 and armv7l
+RUN --mount=type=cache,id=apt-run,target=/var/apt/cache \
+    if [ ! "${TARGETARCH}${TARGETVARIANT}" = 'amd64' ]; then \
+      wget -O - 'http://archive.raspberrypi.org/debian/raspberrypi.gpg.key' | apt-key add - && \
+      echo "deb http://archive.raspberrypi.org/debian/ buster main" >> /etc/apt/sources.list && \
+      apt-get update && \
+      apt-get install --yes --no-install-recommends \
+        llvm-${LLVM_VERSION}-dev; \
+    fi
+
+# Create virtual environment so we can use a working pip
+RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
+    python3 -m venv /app && \
+    /app/bin/pip3 install --upgrade pip && \
+    /app/bin/pip3 install --upgrade wheel setuptools
+
 COPY download/${TARGETARCH}${TARGETVARIANT}/ /download/
 
+ENV LLVM_CONFIG=/usr/bin/llvm-config-${LLVM_VERSION}
 
-# IFDEF NOAVX
-#! RUN mv download/noavx/* download/
-# ENDIF
+ENV TORCH_VERSION=1.8.0
 
-RUN ${VENV}/bin/pip3 install -f download/ 'numpy==1.20.1' 'wheel' 'llvmlite==0.28.0'
+# Install CPU-only PyTorch to save space.
+# Pre-compiled ARM wheels require newer numpy.
+RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
+    /app/bin/pip3 install \
+      "torch==${TORCH_VERSION}+cpu" \
+      'numpy==1.20.2' \
+      'scipy==1.6.3' \
+      -f https://download.pytorch.org/whl/torch_stable.html \
+      -f https://synesthesiam.github.io/prebuilt-apps/index.html \
+      -f /download
 
-# Pre Download Torch into cache
-RUN wget https://files.pythonhosted.org/packages/5d/5e/35140615fc1f925023f489e71086a9ecc188053d263d3594237281284d82/torch-1.6.0-cp37-cp37m-manylinux1_x86_64.whl -P download/
+ARG TTS_VERSION
 
-# Install torch from local cache if present
-RUN ${VENV}/bin/pip3 install -f /download --no-index --no-deps 'torch==1.6.0' || true
+# Remove torch, numpy, and scipy from requirements.txt since we already installed them above.
+RUN wget -O "TTS-${TTS_VERSION}.tar.gz" "https://github.com/coqui-ai/TTS/archive/refs/tags/v${TTS_VERSION}.tar.gz" && \
+    tar -xf "TTS-${TTS_VERSION}.tar.gz" && \
+    cd "TTS-${TTS_VERSION}/" && \
+    sed -i '/^\(torch\|numpy\|scipy\)[>=~]/d' requirements.txt
 
-# Install the rest of the requirements
-RUN cd /app/TTS && \
-    if [ -f /download/requirements.txt ]; then cp /download/requirements.txt . ; fi && \
-    ${VENV}/bin/pip3 install -f /download -r requirements.txt
+RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
+    /app/bin/pip3 install -r "/TTS-${TTS_VERSION}/requirements.txt" -f /download
 
-# Install MozillaTTS itself
-RUN cd /app/TTS && \
-    ${VENV}/bin/python3 setup.py install
+RUN --mount=type=cache,id=python-run,target=/var/apt/cache \
+    /app/bin/pip3 install "/TTS-${TTS_VERSION}" -f /download
 
-# Packages needed for web server
-RUN ${VENV}/bin/pip3 install -f download/ 'quart' 'quart-cors'
+# Clean up
+RUN rm -f /etc/apt/apt.conf.d/01cache
 
-# -----------------------------------------------------------------------------
+# Stop eSpeak from reaching out to pulseaudio, even if told to be silent
+ENV PULSE_SERVER=''
 
-FROM debian:buster-slim
+ENV PATH=/app/bin:${PATH}
 
-ENV LANG C.UTF-8
-
-# IFDEF PROXY
-#! RUN echo 'Acquire::http { Proxy "http://${APT_PROXY_HOST}:${APT_PROXY_PORT}"; };' >> /etc/apt/apt.conf.d/01proxy
-# ENDIF
-
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends \
-        python3 python3-distutils python3-llvmlite libpython3.7 \
-        espeak libsndfile1 git \
-        espeak \
-        libsndfile1 libgomp1 libatlas3-base libgfortran4 libopenblas-base \
-        libjbig0 liblcms2-2 libopenjp2-7 libtiff5 libwebp6 libwebpdemux2 libwebpmux3 \
-        libnuma1
-
-# IFDEF PROXY
-#! RUN rm -f /etc/apt/apt.conf.d/01proxy
-# ENDIF
-
-COPY --from=build /app/venv/ /app/
-
-ARG LANGUAGE=en
-RUN echo "0.0.1"
-COPY model/${LANGUAGE}/ /app/model/
-COPY tts_web/ /app/tts_web/
-COPY run.sh /
-
-WORKDIR /app
-
-EXPOSE 5002
-
-ENTRYPOINT ["/bin/bash", "/run.sh"]
+ENTRYPOINT ["tts"]
