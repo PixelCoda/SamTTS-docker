@@ -97,6 +97,7 @@ RUN apt-get update && \
 COPY --from=build /app/venv/ /app/
 
 ARG LANGUAGE=en
+RUN echo "0.0.1"
 COPY model/${LANGUAGE}/ /app/model/
 COPY tts_web/ /app/tts_web/
 COPY run.sh /
